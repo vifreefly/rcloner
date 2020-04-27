@@ -1,31 +1,56 @@
 # Rcloner
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/rcloner`. To experiment with that code, run `bin/console` for an interactive prompt.
+> Note: README in progress
+
+Simple wrapper for Rclone which allows to sync/restore your application files/database.
 
 ## Installation
 
-Add this line to your application's Gemfile:
-
-```ruby
-gem 'rcloner'
+```bash
+$ gem install rcloner # not working at the moment because gem didn't pushed to rubygems yet
 ```
 
-And then execute:
+```ruby
+https://github.com/vifreefly/rcloner
+```
 
-    $ bundle install
+## Configuration
 
-Or install it yourself as:
+First you will need to configure your Rclone `remote` storage.
 
-    $ gem install rcloner
+1. Install rclone
+2. Configure rclone remote storage, call it `remote`
 
 ## Usage
 
-TODO: Write usage instructions here
+Write a config file, example:
 
-## Contributing
+```yml
+# rcloner.yml
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/rcloner.
+name: my_app
+root_path: /home/deploy/my_app
+items:
+  - type: pgdatabase
+    db_url: "postgres://my_app_username:my_app_userpass@localhost/my_app_database_name"
 
+  - type: folder
+    path: public/images
+
+  - type: file
+    path: config/master.key
+```
+
+To sync all items from local to remote, run:
+
+```bash
+$
+```
+
+
+## How to run backup with a cron
+
+Use Whenewer gem.
 
 ## License
 
