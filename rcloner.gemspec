@@ -23,7 +23,8 @@ Gem::Specification.new do |spec|
   end
 
   spec.add_dependency "thor"
-  spec.add_dependency "postgressor", "~> 0.3"
+  spec.add_dependency "postgressor", "~> 0.3.1"
+  spec.add_dependency "dotenv"
 
   spec.bindir        = "exe"
   spec.executables   = "rcloner"

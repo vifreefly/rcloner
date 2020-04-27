@@ -1,5 +1,6 @@
 require 'yaml'
 require 'uri'
+require 'dotenv'
 
 module Rcloner
   class Backuper
@@ -32,7 +33,16 @@ module Rcloner
     end
 
     def sync_pgdatabase(item, to:)
-      db_url = item['db_url']
+      db_url =
+        if item['read_db_url_from_env']
+          Dir.chdir(@config['root_path']) do
+            `bundle exec postgressor print_db_url`.strip
+          end
+        else
+          item['db_url']
+        end
+
+      raise 'Cant read pgdatabase item db_url' unless db_url
 
       db_backup_filename = URI.parse(db_url).path.sub('/', '') + '.dump'
       relative_db_backup_filepath = 'tmp/' + db_backup_filename
@@ -41,7 +51,8 @@ module Rcloner
 
       case to
       when :remote
-        execute %W(bundle exec postgressor dumpdb #{local_db_backup_file_path}), { 'DATABASE_URL' => db_url }
+        env = { 'DATABASE_URL' => db_url }
+        execute %W(bundle exec postgressor dumpdb #{local_db_backup_file_path}), env: env
         sync_file(item, to: :remote)
       when :local
         sync_file(item, to: :local)
@@ -95,8 +106,12 @@ module Rcloner
 
     ###
 
-    def execute(command, env = {})
-      system env, *command
+    def execute(command, env: {}, path: nil)
+      if path
+        system env, *command, chdir: path
+      else
+        system env, *command
+      end
     end
   end
 end

@@ -97,6 +97,10 @@ deploy@server:~/my_app$ SWITCH_TO_SUPERUSER=true RESTORE_PGDATABASE=true bundle 
 
 Use Whenewer gem.
 
+## TODO
+
+* Allow to provide a custom config file path for backup/restore commands
+
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
