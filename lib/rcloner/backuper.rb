@@ -50,7 +50,7 @@ module Rcloner
         if item['read_url_from_env']
           read_dir_path = File.join(@config['root_path'], item['read_url_path'].to_s)
           Dir.chdir(read_dir_path) do
-            `bundle exec postgressor print_db_url`.strip
+            `postgressor print_db_url`.strip
           end
         else
           item['db_url']
@@ -67,13 +67,13 @@ module Rcloner
 
       case to
       when :remote
-        execute %W(bundle exec postgressor dumpdb #{local_db_backup_file_path}), env: env
+        execute %W(postgressor dumpdb #{local_db_backup_file_path}), env: env
         sync_file(item, to: :remote)
       when :local
         sync_file(item, to: :local)
 
         if ENV['RESTORE_PGDATABASE'] == 'true'
-          command = %W(bundle exec postgressor restoredb #{local_db_backup_file_path})
+          command = %W(postgressor restoredb #{local_db_backup_file_path})
           command << '--switch_to_superuser' if ENV['SWITCH_TO_SUPERUSER'] == 'true'
 
           execute command, env: env
