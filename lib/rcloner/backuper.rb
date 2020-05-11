@@ -135,6 +135,8 @@ module Rcloner
     ###
 
     def execute(command, env: {}, path: nil)
+      puts "Execute: #{command.join(' ')}\n\n" if ENV['VERBOSE'] == 'true'
+
       if path
         system env, *command, chdir: path
       else
