@@ -42,7 +42,11 @@ module Rcloner
     end
 
     def sync_pgdatabase(item, to:)
-      db_url =
+      if database_url = ENV['DATABASE_URL']
+        puts 'Env variable `DATABASE_URL` exists, taking db_url value from it'
+      end
+
+      db_url = database_url ||
         if item['read_url_from_env']
           read_dir_path = File.join(@config['root_path'], item['read_url_path'].to_s)
           Dir.chdir(read_dir_path) do
