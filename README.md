@@ -1,6 +1,6 @@
 # Rcloner
 
-> Note: README in progress
+> README in progress. Project is on the early stage, use it at your own risk.
 
 Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which allows to sync/restore your application files/database.
 
@@ -12,9 +12,9 @@ Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which all
 
 **3)** Install gem **rcloner**:
 
-`$ gem install rcloner` is not working at the moment, because gem is not pushed to rubygems yet.
+`$ gem install rcloner`
 
-You can install gem directly from github using [specific_install](https://github.com/rdp/specific_install):
+Or you can install gem directly from github using [specific_install](https://github.com/rdp/specific_install):
 
 ```bash
 $ gem install specific_install
