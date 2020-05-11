@@ -7,6 +7,7 @@ Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which all
 ## Installation
 
 **1)** [Install](https://rclone.org/install/) **rclone**
+
 **2)** [Install](http://duplicity.nongnu.org/) **duplicity**, minimal supported version is `0.8.09`. If you're using Ubuntu, the most simple way to install latest version is via snap: `$ sudo snap install duplicity --classic`
 
 **3)** Install gem **rcloner**:
@@ -65,7 +66,7 @@ At the moment 3 types of items are supported:
 To sync all items from local to remote rclone storage use `backup` command:
 
 ```
-deploy@server:~/my_app$ bundle exec rcloner backup
+deploy@server:~/my_app$ rcloner backup --config rcloner.yml
 
 Dumped database my_app_database to /home/deploy/my_app/tmp/my_app_database.dump file.
 Synced file `my_app_database.dump` from `/home/deploy/my_app/tmp/my_app_database.dump` to `remote:my_app_backup/my_app_database.dump`
@@ -82,13 +83,16 @@ Synced file `master.key` from `/home/deploy/my_app/config/master.key` to `remote
 To sync all items from remote rclone storage to local server use `restore` command:
 
 ```
-deploy@server:~/my_app$ bundle exec rcloner restore
+deploy@server:~/my_app$ rcloner restore --config rcloner.yml
+
 Synced file `my_app_database.dump` from `remote:my_app_backup/my_app_database.dump` to `/home/deploy/my_app/tmp/my_app_database.dump`
 
 Synced folder `images` from `remote:my_app_backup/images` to `/home/deploy/my_app/public/images`
 
 Synced file `master.key` from `remote:my_app_backup/master.key` to `/home/deploy/my_app/config/master.key`
 ```
+
+### Information about pgdatabase type restore
 
 If you want to automatically restore application database from a synced backup file, you need to provide additional `RESTORE_PGDATABASE=true` env variable.
 
@@ -97,16 +101,12 @@ Also you can provide `SWITCH_TO_SUPERUSER=true` env variable to temporary switch
 Example:
 
 ```
-deploy@server:~/my_app$ SWITCH_TO_SUPERUSER=true RESTORE_PGDATABASE=true bundle exec rcloner restore
+deploy@server:~/my_app$ SWITCH_TO_SUPERUSER=true RESTORE_PGDATABASE=true rcloner restore --config rcloner.yml
 ```
 
 ## How to run backup with a cron
 
 Use Whenewer gem.
-
-## TODO
-
-* Allow to provide a custom config file path for backup/restore commands
 
 ## Notes
 

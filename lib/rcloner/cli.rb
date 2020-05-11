@@ -1,4 +1,5 @@
 require 'thor'
+require 'yaml'
 require_relative 'backuper'
 
 module Rcloner
@@ -11,12 +12,14 @@ module Rcloner
     end
 
     desc 'backup', 'Backup all items to a remote storage'
+    option :config, type: :string, required: true, banner: 'Path to a config file'
     def backup
       backuper = create_backuper
       backuper.backup!
     end
 
     desc 'restore', 'Restore all items from a remote storage'
+    option :config, type: :string, required: true, banner: 'Path to a config file'
     def restore
       backuper = create_backuper
       backuper.restore!
@@ -25,10 +28,13 @@ module Rcloner
     private
 
     def create_backuper
-      config_path = './rcloner.yml'
-      raise 'Please provide a config path' unless config_path
+      config_path = options['config']
+      unless File.exists?(config_path)
+        raise "Config file `#{config_path}` does not exists"
+      end
 
-      Backuper.new(config_path)
+      config = YAML.load(File.read(config_path))
+      Backuper.new(config)
     end
   end
 end

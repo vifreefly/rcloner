@@ -1,11 +1,10 @@
-require 'yaml'
 require 'uri'
 require 'dotenv'
 
 module Rcloner
   class Backuper
-    def initialize(config_path)
-      @config = YAML.load(File.read(config_path))
+    def initialize(config)
+      @config = config
       @project_folder = @config['name'] + '_backup'
 
       # Create tmp/ folder insite root_path:
