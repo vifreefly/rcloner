@@ -7,6 +7,17 @@ module Rcloner
     def initialize(config_path)
       @config = YAML.load(File.read(config_path))
       @project_folder = @config['name'] + '_backup'
+
+      # Create tmp/ folder insite root_path:
+      Dir.chdir(@config['root_path']) do
+        FileUtils.mkdir_p(File.join @config['root_path'], 'tmp')
+      end
+
+      if @config['items'].any? { |item| item['duplicity'] }
+        if ENV['PASSPHRASE'].nil? || ENV['PASSPHRASE'].empty?
+          raise "One of your items has duplicity backend but `PASSPHRASE` env variable is not set"
+        end
+      end
     end
 
     def backup!
@@ -99,7 +110,24 @@ module Rcloner
       end
 
       execute %W(rclone mkdir #{to_path})
-      execute %W(rclone sync #{from_path} #{to_path})
+
+      if item['duplicity']
+        case to
+        when :remote
+          dup_to_path = "rclone://remote:#{remote_folder_path}"
+          dup_from_path = local_folder_path
+          dup_command = %W(duplicity #{dup_from_path} #{dup_to_path})
+        when :local
+          dup_to_path = local_folder_path
+          dup_from_path = "rclone://remote:#{remote_folder_path}"
+          dup_command = %W(duplicity restore #{dup_from_path} #{dup_to_path} --force)
+        end
+
+        puts "Start syncing folder `#{folder_name}` from `#{from_path}` to `#{to_path}` using duplicity backend..."
+        execute dup_command
+      else
+        execute %W(rclone sync #{from_path} #{to_path})
+      end
 
       puts "Synced folder `#{folder_name}` from `#{from_path}` to `#{to_path}`"
     end

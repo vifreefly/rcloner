@@ -2,21 +2,27 @@
 
 > Note: README in progress
 
-Simple wrapper for Rclone which allows to sync/restore your application files/database.
+Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which allows to sync/restore your application files/database.
 
 ## Installation
 
-Install rclone: https://rclone.org/install/
+**1)** [Install](https://rclone.org/install/) **rclone**
+**2)** [Install](http://duplicity.nongnu.org/) **duplicity**, minimal supported version is `0.8.09`. If you're using Ubuntu, the most simple way to install latest version is via snap: `$ sudo snap install duplicity --classic`
 
-Install rcloner:
+**3)** Install gem **rcloner**:
+
+`$ gem install rcloner` is not working at the moment, because gem is not pushed to rubygems yet.
+
+You can install gem directly from github using [specific_install](https://github.com/rdp/specific_install):
 
 ```bash
-$ gem install rcloner # not working at the moment because gem didn't pushed to rubygems yet
+$ gem install specific_install
+$ gem specific_install https://github.com/vifreefly/rcloner
 ```
 
-```ruby
-# Gemfile
+Another option is to add gem to your application Gemfile:
 
+```ruby
 gem 'rcloner', git: 'https://github.com/vifreefly/rcloner', require: false
 ```
 
@@ -41,6 +47,7 @@ items:
     db_url: "postgres://my_app_username:my_app_userpass@localhost/my_app_database"
 
   - type: folder
+    duplicity: false
     path: public/images
 
   - type: file
@@ -50,7 +57,7 @@ items:
 At the moment 3 types of items are supported:
 
 * `file` - sync a single file
-* `folder` - sync a directory
+* `folder` - sync a directory. For `folder` type there is optional `duplicity` flag. If `duplicity: true`, folder will be synced using duplicity with compression. It's a good option if folder contains a lot of files which syncing each by each will take A LOT of time. Duplicity puts all the files in archive file before copying it to a remote storage.
 * `pgdatabase` - sunc application database (postgres only). [Postgressor](https://github.com/vifreefly/postgressor) gem is used under the hood.
 
 ### backup
@@ -68,7 +75,7 @@ Synced folder `images` from `/home/deploy/my_app/public/images` to `remote:my_ap
 Synced file `master.key` from `/home/deploy/my_app/config/master.key` to `remote:my_app_backup/master.key`
 ```
 
-> Note: to backup database, Rcloner use gem [postgressor](https://github.com/vifreefly/postgressor) under the hood
+> Note: to backup database, Rcloner use gem [postgressor](https://github.com/vifreefly/postgressor) under the hood.
 
 ### restore
 
@@ -100,6 +107,10 @@ Use Whenewer gem.
 ## TODO
 
 * Allow to provide a custom config file path for backup/restore commands
+
+## Notes
+
+* Rclone/duplicity integration https://github.com/GilGalaad/duplicity-rclone
 
 ## License
 
