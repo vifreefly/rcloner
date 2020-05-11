@@ -1,5 +1,6 @@
 require 'uri'
 require 'dotenv'
+require 'pathname'
 
 module Rcloner
   class Backuper
