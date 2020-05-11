@@ -6,13 +6,23 @@ Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which all
 
 ## Installation
 
-**1)** [Install](https://rclone.org/install/) **rclone**
+**1)** [Install](https://rclone.org/install/) **rclone**:
 
-**2)** [Install](http://duplicity.nongnu.org/) **duplicity**, minimal supported version is `0.8.09`. If you're using Ubuntu, the most simple way to install latest version is via snap: `$ sudo snap install duplicity --classic`
+```bash
+$ curl https://rclone.org/install.sh | sudo bash
+```
+
+**2)** [Install](http://duplicity.nongnu.org/) **duplicity**, minimal supported version is `0.8.09`. If you're using Ubuntu, the most simple way to install latest version is via snap:
+
+```bash
+$ sudo snap install duplicity --classic
+```
 
 **3)** Install gem **rcloner**:
 
-`$ gem install rcloner`
+```bash
+$ gem install rcloner
+```
 
 Or you can install gem directly from github using [specific_install](https://github.com/rdp/specific_install):
 
@@ -25,6 +35,12 @@ Another option is to add gem to your application Gemfile:
 
 ```ruby
 gem 'rcloner', git: 'https://github.com/vifreefly/rcloner', require: false
+```
+
+**4) Install gem postgressor (optional for pgdatabase type)**:
+
+```bash
+$ gem install postgressor
 ```
 
 ## Configuration

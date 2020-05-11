@@ -74,11 +74,12 @@ module Rcloner
 
         if ENV['RESTORE_PGDATABASE'] == 'true'
           if ENV['CREATE_PGUSER'] == 'true'
-            execute %W(postgressor createuser), env: env
-            puts "Created pg user"
+            if execute %W(postgressor createuser), env: env
+              puts "Created pg user"
+            end
           end
 
-          restore_command = %W(postgressor restoredb #{local_db_backup_file_path})
+          restore_command = %W(postgressor restoredb #{local_db_backup_file_path} --createdb)
           restore_command << '--switch_to_superuser' if ENV['SWITCH_TO_SUPERUSER'] == 'true'
           execute restore_command, env: env
         end
