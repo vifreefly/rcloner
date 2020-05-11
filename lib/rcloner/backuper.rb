@@ -63,9 +63,10 @@ module Rcloner
       local_db_backup_file_path = File.join(@config['root_path'], relative_db_backup_filepath)
       item = { 'path' => relative_db_backup_filepath }
 
+      env = { 'DATABASE_URL' => db_url }
+
       case to
       when :remote
-        env = { 'DATABASE_URL' => db_url }
         execute %W(bundle exec postgressor dumpdb #{local_db_backup_file_path}), env: env
         sync_file(item, to: :remote)
       when :local
@@ -75,7 +76,7 @@ module Rcloner
           command = %W(bundle exec postgressor restoredb #{local_db_backup_file_path})
           command << '--switch_to_superuser' if ENV['SWITCH_TO_SUPERUSER'] == 'true'
 
-          execute command, { 'DATABASE_URL' => db_url }
+          execute command, env: env
         end
       end
     end
