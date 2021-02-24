@@ -15,15 +15,17 @@ include:
   - '.env'
   - 'tmp/db.dump'
 on_backup:
-  before: 'cd ~/myapp && postgressor dumpdb tmp/db.dump'
-  after: 'rm ~/myapp/db.dump'
+  before: 'postgressor dumpdb tmp/db.dump'
+  after: 'rm tmp/db.dump'
 ```
 
 Where:
   * `origin` is the root folder path if your application. If not provided - current directory will be taken. Can be also provided as `RCLONER_ORIGIN` env variable.
   * `destination` - remote path in dyplicity format. Can be also provided as env variable `RCLONER_DESTINATION`.
   * `include` if provided - only this paths will be taken for backup, not the whole `origin`. Urls should be provided in relative paths to `origin` folder.
-  * `on_backup` (`before`/`after`) custom optional commands/scripts to execute before/after backup.
+  * `on_backup` (`before`/`after`) custom optional commands/scripts to execute before/after backup. Commands will be executed into `origin` directory.
+
+Note that rcloner by default loads env variables from .env file (if exists) in current category.
 
 ## Installation
 
@@ -58,7 +60,7 @@ Another option is to add gem to your application Gemfile:
 gem 'rcloner', git: 'https://github.com/vifreefly/rcloner', require: false
 ```
 
-**4) Install gem postgressor (optional for postgres database)**:
+<!-- **4) Install gem postgressor (optional for postgres database)**:
 
 ```bash
 $ gem install postgressor
@@ -69,7 +71,7 @@ $ gem install postgressor
 First you will need to configure your Rclone `remote` storage.
 
 1. Install rclone
-2. Configure rclone remote storage (run `$ rclone config`), name it `remote`.
+2. Configure rclone remote storage (run `$ rclone config`), name it `remote`. -->
 
 ## Usage
 
