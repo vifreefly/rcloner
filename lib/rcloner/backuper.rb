@@ -41,6 +41,14 @@ module Rcloner
         end
       end
 
+      # https://github.com/GilGalaad/duplicity-rclone does not creates
+      # folders automatically on a remote destination (if there's no folder
+      # command will fail). So first we will create backup folder using rclone:
+      if @config['destination'].include?('rclone://')
+        rclone_storage = @config['destination'].sub('rclone://', '')
+        execute %W(rclone mkdir #{rclone_storage})
+      end
+
       @command = %W(duplicity)
       @config['include'].each { |i| @command.push('--include', i) }
       @config['exclude'].each { |i| @command.push('--exclude', i) }
