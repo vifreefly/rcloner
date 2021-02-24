@@ -20,9 +20,10 @@ module Rcloner
 
     desc 'restore', 'Restore all items from a remote storage'
     option :config, type: :string, required: true, banner: 'Path to a config file'
-    def restore
+    option :force, type: :boolean, default: false, banner: 'Allow to overwrite existing directory'
+    def restore(to = nil)
       backuper = create_backuper
-      backuper.restore!
+      backuper.restore!(to, options['force'])
     end
 
     private

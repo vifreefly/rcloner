@@ -2,7 +2,28 @@
 
 > README in progress. Project is on the early stage, use it at your own risk.
 
-Simple wrapper for Rclone (with optional Duplicity backend for Rclone) which allows to sync/restore your application files/database.
+Simple wrapper for Duplicity (with optional Rclone backend) which allows to sync/restore your application files/database from a remote storage. All files stored on a remote storage are encrypted and backups are incremental, thanks to Duplicity.
+
+Example config (`rcloner.yml`)
+
+```yml
+origin: /home/deploy/myapp
+destination: webdavs://login:pass@webdav.yandex.ru/myapp_backup
+include:
+  - 'public/images'
+  - 'config/master.key'
+  - '.env'
+  - 'tmp/db.dump'
+on_backup:
+  before: 'cd ~/myapp && postgressor dumpdb tmp/db.dump'
+  after: 'rm ~/myapp/db.dump'
+```
+
+Where:
+  * `origin` is the root folder path if your application. If not provided - current directory will be taken. Can be also provided as `RCLONER_ORIGIN` env variable.
+  * `destination` - remote path in dyplicity format. Can be also provided as env variable `RCLONER_DESTINATION`.
+  * `include` if provided - only this paths will be taken for backup, not the whole `origin`. Urls should be provided in relative paths to `origin` folder.
+  * `on_backup` (`before`/`after`) custom optional commands/scripts to execute before/after backup.
 
 ## Installation
 
@@ -37,7 +58,7 @@ Another option is to add gem to your application Gemfile:
 gem 'rcloner', git: 'https://github.com/vifreefly/rcloner', require: false
 ```
 
-**4) Install gem postgressor (optional for pgdatabase type)**:
+**4) Install gem postgressor (optional for postgres database)**:
 
 ```bash
 $ gem install postgressor
@@ -52,7 +73,9 @@ First you will need to configure your Rclone `remote` storage.
 
 ## Usage
 
-Write a config file, example:
+Readme in progress...
+
+<!-- Write a config file, example:
 
 ```yml
 # rcloner.yml
@@ -75,7 +98,7 @@ At the moment 3 types of items are supported:
 
 * `file` - sync a single file
 * `folder` - sync a directory. For `folder` type there is optional `duplicity` flag. If `duplicity: true`, folder will be synced using duplicity with compression. It's a good option if folder contains a lot of files which syncing each by each will take A LOT of time. Duplicity puts all the files in archive file before copying it to a remote storage.
-* `pgdatabase` - sunc application database (postgres only). [Postgressor](https://github.com/vifreefly/postgressor) gem is used under the hood.
+* `pgdatabase` - sunc application database (postgres only). [Postgressor](https://github.com/vifreefly/postgressor) gem is used under the hood. -->
 
 ### backup
 
@@ -83,7 +106,8 @@ To sync all items from local to remote rclone storage use `backup` command:
 
 ```
 deploy@server:~/my_app$ rcloner backup --config rcloner.yml
-
+```
+<!--
 Dumped database my_app_database to /home/deploy/my_app/tmp/my_app_database.dump file.
 Synced file `my_app_database.dump` from `/home/deploy/my_app/tmp/my_app_database.dump` to `remote:my_app_backup/my_app_database.dump`
 
@@ -92,7 +116,7 @@ Synced folder `images` from `/home/deploy/my_app/public/images` to `remote:my_ap
 Synced file `master.key` from `/home/deploy/my_app/config/master.key` to `remote:my_app_backup/master.key`
 ```
 
-> Note: to backup database, Rcloner use gem [postgressor](https://github.com/vifreefly/postgressor) under the hood.
+> Note: to backup database, Rcloner use gem [postgressor](https://github.com/vifreefly/postgressor) under the hood. -->
 
 ### restore
 
@@ -100,7 +124,9 @@ To sync all items from remote rclone storage to local server use `restore` comma
 
 ```
 deploy@server:~/my_app$ rcloner restore --config rcloner.yml
+```
 
+<!--
 Synced file `my_app_database.dump` from `remote:my_app_backup/my_app_database.dump` to `/home/deploy/my_app/tmp/my_app_database.dump`
 
 Synced folder `images` from `remote:my_app_backup/images` to `/home/deploy/my_app/public/images`
@@ -118,7 +144,7 @@ Example:
 
 ```
 deploy@server:~/my_app$ SWITCH_TO_SUPERUSER=true RESTORE_PGDATABASE=true rcloner restore --config rcloner.yml
-```
+``` -->
 
 ## How to run backup with a cron
 
